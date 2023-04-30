@@ -1,2 +1,2 @@
 # CanStellar
-Satellite and Station program
+Station Program
