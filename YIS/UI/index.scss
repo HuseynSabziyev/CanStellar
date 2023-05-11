@@ -27,8 +27,9 @@ background-image: url("./assets/background.png");
     margin-top: 100px;
     background-color: rgba(255, 255, 255, 0.9);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 50px;
+    flex-wrap: wrap;
     #tele-data{
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         transition-duration: 1s;
