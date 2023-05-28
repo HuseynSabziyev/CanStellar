@@ -357,7 +357,6 @@ void getData(char *data) {
 
   }
 
-
 }
 
 void writeToSD(){
