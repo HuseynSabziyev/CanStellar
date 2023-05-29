@@ -46,14 +46,15 @@
     <div id="main" class="container-fluid">
         <div id="databox" class="container-sm  display-flex flex-direction-column">
             @{
+                int s = 1;
                 foreach (var item in Model)
                 {
-                    
+
                         <div id="tele-data">
-                            <p id="raw-telemetric-data">1. Xam Telemetriya: @item.Raw</p>
+                            <p id="raw-telemetric-data">@(s). Xam Telemetriya: @item.Raw</p>
                             <h6>Detallı telemetriya:</h6>
                             <ol id="telemetric-data-list">
-                                <li><p>Komanda ID: @item.TeamId</p></li>
+                                <li><p>Komanda ID: @item.TeamId,</p></li>
                                 <li><p>Çalışma müddəti: @item.WorkingTime s</p></li>
                                 <li><p>Telemetriya paketlərinin sayı: @item.NumberOfPackages</p></li>
                                 <li><p>Batereyanın gərginliyi: @item.CurrentVoltage V</p></li>
@@ -61,12 +62,12 @@
                                 <li><p>Sürət: @item.Speed m/s</p></li>
                                 <li><p>Coğrafi en: @item.Latitude </p></li>
                                 <li><p>Coğrafi uzunluq: @item.Longitude </p></li>
-                                <li><p>Daşıyıcıdan ayrıldığı vaxt: @item.TimeSinceSeperation s</p></li>
+                                <li><p>Daşıyıcıdan ayrıldığı vaxt: @item.TimeSinceSeperation.Hour:@item.TimeSinceSeperation.Minute:@item.TimeSinceSeperation.Second</p></li>
                                 <li><p>Videogörüntünün müddəti: @item.DurationOfVideo s</p></li>
                             </ol>
                         </div>
                 }
-                
+                s++;
             }
 
         </div>

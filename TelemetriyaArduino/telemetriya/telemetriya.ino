@@ -3,15 +3,17 @@
 #include <Wire.h>
 #include <EEPROM.h>
 #include <TimeLib.h>
+#include <DS1302.h>
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BMP280.h>
+#include <Adafruit_MPL3115A2.h>
 
-#define teamID 3238
+
+#define teamID 3138
 #define GPS Serial2
 #define XBEE Serial1
 #define SD_CS BUILTIN_SDCARD
 
-Adafruit_BMP280 bmp; //initializing altitude sensor in I2C mode
+Adafruit_MPL3115A2 mp = Adafruit_MPL3115A2(); //initializing altitude sensor in I2C mode
 
 File canFile;
 uint16_t currentTime;
@@ -21,44 +23,38 @@ int secs, hours, mins, seconds, r, res, done, refpackage, status, photo = 0, pac
 
 
 void setup() {
- 
   GPS.begin(9600); //open Serial port for GPS
   XBEE.begin(9600); //open serial port for xbee
   Serial.begin(9600); //open serial port for USB read
-
-    
   pinMode(13, OUTPUT);
-  digitalWrite(13, HIGH); //indicates if teensy works
-
-  pinMode(A15, INPUT); //photoresistor
-  pinMode(37, OUTPUT); //buzzer PİN DEYİSMELİYİK
-  pinMode(39, OUTPUT); //nichrome !NO NEED
-  
+  digitalWrite(13, HIGH); //indicates if SONGHE works, FIGURE OUT THIS 13
+  pinMode(D9, OUTPUT); //buzzer
   res = EEPROM.read(10);
-
-  digitalWrite(37, HIGH);
-  setupBMP(); //check if there is connection with bmp sensor
-  indicateStatus(); //check if teensy has been reseted
+  digitalWrite(D9, HIGH);
+  setupMP(); //check if there is connection with smp sensor
+  indicateStatus(); //check if SONGHE has been reseted
   setupSDcard(); //check if there is connection with SD card
   setupCamera(); 
   delay(1000);
   setupTime(); //set DS1307 to valid time
-  digitalWrite(37, LOW);
-      Serial.print("refaltit: ");
+  digitalWrite(D9, LOW);
+  Serial.print("refaltit: ");
   Serial.println(refaltit);
 }
 
 void loop() {
   
-Serial.print("status: "); Serial.println(status);
+Serial.print("status: "); 
+Serial.println(status);
 
   if(status != 3){
   
-  digitalWrite(37, !digitalRead(37));
+  digitalWrite(D9, !digitalRead(D9)); //digitalRead HAL HAZIRDA SENSORUN voltagesinin valuesini qaytarir (ex. LOW, HIGH)
+
   uint64_t prevTime = millis();
   
   if(status != 2) //measure light only if the model has not been released
-  senseLight();
+  // senseLight(); PARASHUT ACILMASI
   //DIQQET!
   getTime(); //read seconds
   getAltitude(); //read altitude data
@@ -69,7 +65,7 @@ Serial.print("status: "); Serial.println(status);
 
   if(c==0){
     
-  takePhoto();
+  // takePhoto(); DIQQET
   c++;
   
   }
@@ -80,9 +76,11 @@ Serial.print("status: "); Serial.println(status);
   else c++;
   
   if(status) //after command begin to write to SD card
+
   writeToSD();
 
   delay(20);
+
   sendtoXBee();
 
   
@@ -117,24 +115,23 @@ Serial.print("status: "); Serial.println(status);
 
   else
   delay(1);
-  
-
   }
 
 
   else if(status == 3)  //if it is already on ground send sound signal
-  soundSignal();  
+  soundSignal();
   
 }
-
+//DEYISMELIDI
 time_t getTeensyTime(){
 
   return Teensy3Clock.get();
   
 }
 
+//PIN DEQIQLESDIR SILMEK LAZIMDIR?
 void setupCamera(){
-
+  
   pinMode(29, OUTPUT);
   delay(500);
   digitalWrite(29, HIGH); //camera trigger pin needs to be pulled up when not taking pictures
@@ -143,7 +140,7 @@ void setupCamera(){
 }
 
 void setupSDcard(){
-
+  //SD PINININ ADINI YAZ
   if(!SD.begin(SD_CS)){
 
     Serial.println("SD card failed");
@@ -152,28 +149,30 @@ void setupSDcard(){
   
 }
 
-
 void setupTime(){
 
-  setSyncProvider(getTeensyTime); //activate internal RTC
-  setTime(hours, mins, seconds, day(), month(), year()); //reset only clock
-  
+   
+
+  //setSyncProvider(getTeensyTime); //activate internal RTC MUTLEQ NEZERDEN KECIR
+
+  //setTime(hours, mins, seconds, day(), month(), year()); //reset only clock
+   rtc.begin();
+   rtc.setDateTime(hours, mins, seconds); //CHECK THIS
 }
 
-void setupBMP(){
+void setupMP(){
 
-  if(!bmp.begin()){
-
-  Serial.println("Cannot connect to BMP280");
-    
+  if (!mp.begin()) {
+    Serial.println("Could not find a valid MPL3115A2 sensor, check wiring!");
   }
 
 }
 
+//ASK THIS
 void indicateStatus(){
   
   if(res){
-  
+
   delay(50);
   hours = EEPROM.read(11); //if reseted then read time and other reference data from EEPROM
   mins  = EEPROM.read(12);
@@ -181,8 +180,10 @@ void indicateStatus(){
   refaltit = EEPROM.read(14);
   status = EEPROM.read(15);
   delay(10);
+
   package = EEPROM.read(18)*255 + EEPROM.read(16);
   refpackage = EEPROM.read(20)*255 + EEPROM.read(17);
+
   delay(50);
   
   }
@@ -195,26 +196,27 @@ void indicateStatus(){
 
 }
 
+//BIZDE PARASHUT OZ OZUNE ACILACAQ DEYE BUNA EHTIYAC YOXDUR
+// void senseLight(){
 
-void senseLight(){
-
-  light = analogRead(A15);
+//   light = analogRead(A15);
   
-  if(light > 800 && status == 1 ){
+//   if(light > 800 && status == 1 ){
     
-  status = 2; //change status to "enir"
-  c = 0;
-  EEPROM.write(15, status); //update status in EEPROM
+//   status = 2; //change status to "enir"
+//   c = 0;
+//   EEPROM.write(15, status); //update status in EEPROM
   
-  }
+//   }
   
-}
+// }
 
+//MUTLEQ BAX
 void getTime(){
 
   if(r){
     
-    setTime(hours, mins, seconds, day(), month(), year()); //reset clock in each 5 mins
+    rtc.setDateTime(hours, mins, seconds); //reset clock in each 5 mins
     r = 0;
     
   }
@@ -247,8 +249,8 @@ void getAltitude(){
   
   currentTime = millis();
   double prevAltit = altit;
-
-  altit = bmp.readAltitude(1007); //current pressure should be here
+   altit = mp.readAltitude(1007); //current pressure should be here BELE DEYISDIM BAXMAQ LAZIMDIR
+  // altit = Bmp.readAltitude(1007); //current pressure should be here
 
   spd = (prevAltit - altit) * 1000/(currentTime - prevTime);
   
@@ -371,17 +373,12 @@ void writeToSD(){
     canFile.print(",");
     canFile.print(package - refpackage);
     canFile.print(",");
-    //canFile.print(light);
-    //canFile.print(",");
     //BATEREYA VOLTAGE KODU YAZMALIYIQ
     if(status)
     canFile.print(altit - refaltit);
     else
     canFile.print(altit);
-   // canFile.println(altit);
-
-    //if(status == 2){
-      
+    if(status == 2){
     canFile.print(",");
     canFile.print(spd);
     canFile.print(",");
@@ -392,13 +389,14 @@ void writeToSD(){
     //DASIYICIDAN AYRILDIGI VAXT KODU YAZMALIYIQ
     canFile.println(photo);
     //VIDEOGORUNTUNUN MUDDETININ KODUNU YAZMALIYIQ
-   // }
+   }
 
     
   // else{
     //  if(status != 0)
     //canFile.println();
    //}
+  
    canFile.close();
   }
 
@@ -413,7 +411,7 @@ void writeToSD(){
 void sendtoXBee(){
 
 //YUXARIDAKILARIN EYNISINI BURDA DA ETMEK LAZIMDIR !CANSTELLAR!
-    XBEE.print(teamID);
+    XBEE.print("<"+teamID+">");
     XBEE.print(",");
     XBEE.print(secs);
     XBEE.print(",");
@@ -460,10 +458,10 @@ void takePhoto(){
 }
 
 void soundSignal(){
-
-  digitalWrite(37, HIGH);
+//buzzer
+  digitalWrite(D9, HIGH);
   delay(500);
-  digitalWrite(37, LOW);
+  digitalWrite(D9, LOW);
   delay(300);
   
 }
@@ -503,5 +501,4 @@ else if(c == 'c' || c == 'C'){
     EEPROM.write(i, 0);
   
 }
-  
 }

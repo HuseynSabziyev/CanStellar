@@ -54,9 +54,7 @@
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
   margin: 30px;
-  max-width: -webkit-fit-content;
-  max-width: -moz-fit-content;
-  max-width: fit-content;
+  max-width: 400px !important;
   border-color: black;
   border-width: 1px;
   display: -webkit-box;

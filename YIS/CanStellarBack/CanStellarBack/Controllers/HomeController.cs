@@ -18,16 +18,16 @@ namespace CanStellarBack.Controllers
                 {
                     var line = reader.ReadLine();
                     var telemetry = new Telemetry();
-                    telemetry.Raw = line;
                     var values = line.Split(',');
+                    var raw = "";
+
                     for (int j = 0; j < values.Length; j++)
                     {
 
-                   
+                        raw += "<" + values[j] + ">,";
                         //string newString = "";
 
-                       values[j]= values[j].Remove(0, 1);
-                       values[j]= values[j].Remove(values[j].Length - 1, 1);
+                   
                         //for (int i = 0; i < values[j].Length; i++)
                         //{
                       
@@ -44,7 +44,7 @@ namespace CanStellarBack.Controllers
 
 
 
-
+                    telemetry.Raw = raw;
                     telemetry.TeamId = int.Parse(values[0]);
                     telemetry.WorkingTime = int.Parse(values[1]);
                     telemetry.NumberOfPackages = int.Parse(values[2]);

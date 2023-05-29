@@ -3231,11 +3231,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Aykhan\\Desktop\\finaldsa\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj",
+      "projectUniqueName": "C:\\Users\\Aykhan\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj",
       "projectName": "CanStellarBack",
-      "projectPath": "C:\\Users\\Aykhan\\Desktop\\finaldsa\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj",
+      "projectPath": "C:\\Users\\Aykhan\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj",
       "packagesPath": "C:\\Users\\Aykhan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Aykhan\\Desktop\\finaldsa\\CanStellarBack\\CanStellarBack\\obj\\",
+      "outputPath": "C:\\Users\\Aykhan\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Aykhan\\AppData\\Roaming\\NuGet\\NuGet.Config",
