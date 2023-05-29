@@ -1,5 +1,6 @@
 ﻿using CanStellarBack.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,11 +9,17 @@ namespace CanStellarBack.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IHubContext<TelemetryHub> _hubContext;
+
+        public HomeController(IHubContext<TelemetryHub> hubContext)
+        {
+            _hubContext = hubContext;
+        }
         public IActionResult Index()
         {
             using (var reader = new StreamReader("./data/data.csv"))
             {
-                List<Telemetry> telemetries = new List<Telemetry>();
+                Stack<Telemetry> telemetries = new Stack<Telemetry>();
 
                 while (!reader.EndOfStream)
                 {
@@ -23,22 +30,7 @@ namespace CanStellarBack.Controllers
 
                     for (int j = 0; j < values.Length; j++)
                     {
-
                         raw += "<" + values[j] + ">,";
-                        //string newString = "";
-
-                   
-                        //for (int i = 0; i < values[j].Length; i++)
-                        //{
-                      
-                        //    if (values[j][i] != '<' || values[j][i] != '>')
-                        //    {
-                        //        newString += values[j][i];
-                        //    }
-                           
-                        //}
-                        //values[j] = newString;
-
                     }
 
 
@@ -57,11 +49,15 @@ namespace CanStellarBack.Controllers
                     telemetry.DurationOfVideo = int.Parse(values[9]);
                     
 
-                telemetries.Add(telemetry);
+                telemetries.Push(telemetry);
             }
-
+                _hubContext.Clients.All.SendAsync("ReceiveTelemetryData", telemetries);
             return View(telemetries);
         }
     }
-}
+
+
+    }
+
+
 }

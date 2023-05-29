@@ -54,7 +54,8 @@
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
   margin: 30px;
-  max-width: 400px !important;
+  max-width: 338px !important;
+  padding: 20px;
   border-color: black;
   border-width: 1px;
   display: -webkit-box;
