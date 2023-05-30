@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 using System;
+using CanStellarBack.Hubs;
 
 namespace CanStellarBack
 {
@@ -42,16 +44,20 @@ namespace CanStellarBack
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseRouting();
+          
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
-                endpoints.MapHub<TelemetryHub>("/telemetryHub");
+                
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapHub<TelemetryHub>("/telemetryHub");
             });
+
         }
     }
 }

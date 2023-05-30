@@ -44,9 +44,13 @@
               "target": "Package",
               "version": "[30.0.1, )"
             },
-            "Microsoft.AspNetCore.SignalR": {
+            "Microsoft.AspNet.SignalR": {
               "target": "Package",
-              "version": "[1.1.0, )"
+              "version": "[2.4.3, )"
+            },
+            "Microsoft.AspNet.SignalR.Core": {
+              "target": "Package",
+              "version": "[2.4.3, )"
             }
           },
           "imports": [
