@@ -7,27 +7,50 @@ namespace CanStellarBack.Models
 {
     public class Telemetry
     {
-
+        public string Raw { get; set; }
         public int TeamId { get; set; }
 
-        public string Raw { get; set; }
+        public DateTime MissionTime { get; set; }
 
-        public int WorkingTime { get; set; }
+        public int PacketCount { get; set; }
 
-        public int NumberOfPackages { get; set; }
+        public char Mode { get; set; }
 
-        public double CurrentVoltage { get; set; }
+        public State State { get; set; }
 
-        public int Altitude { get; set; }
+        public double Altitude { get; set; }
 
-        public int Speed { get; set; }
+        public double AirSpeed { get; set; }
 
-        public double Latitude { get; set; }
+        public char HS_DEPLOYED { get; set; }
 
-        public double Longitude { get; set; }
+        public char PC_DEPLOYED { get; set; }
 
-        public DateTime TimeSinceSeperation { get; set; }
+        public double Temperature { get; set; }
 
-        public int DurationOfVideo { get; set; }
+        public double Pressure { get; set; }
+
+        public double Voltage { get; set; }
+
+        public int GPS_Time { get; set; }
+
+        public double GPS_Altitude { get; set; }
+
+        public double GPS_Latitude { get; set; }
+
+        public double GPS_Longitude { get; set; }
+
+        public int GPS_Sats { get; set; }
+
+        public double Tilt_X { get; set; }
+
+        public double Tilt_Y { get; set; }
+
+        public double Rot_Z { get; set; }
+
+        public string CMD_ECHO { get; set; }
+       
+        public string Note { get; set; }
+        
     }
 }

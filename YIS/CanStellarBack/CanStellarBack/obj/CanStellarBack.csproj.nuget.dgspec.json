@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Aykhan\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj": {}
+    "C:\\Users\\V-COMP\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Aykhan\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj": {
+    "C:\\Users\\V-COMP\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Aykhan\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj",
+        "projectUniqueName": "C:\\Users\\V-COMP\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj",
         "projectName": "CanStellarBack",
-        "projectPath": "C:\\Users\\Aykhan\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj",
-        "packagesPath": "C:\\Users\\Aykhan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Aykhan\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\obj\\",
+        "projectPath": "C:\\Users\\V-COMP\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\CanStellarBack.csproj",
+        "packagesPath": "C:\\Users\\V-COMP\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\V-COMP\\Desktop\\CanStellar\\YIS\\CanStellarBack\\CanStellarBack\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Aykhan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\V-COMP\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -51,6 +54,10 @@
             "Microsoft.AspNet.SignalR.Core": {
               "target": "Package",
               "version": "[2.4.3, )"
+            },
+            "System.IO.Ports": {
+              "target": "Package",
+              "version": "[4.4.0, )"
             }
           },
           "imports": [
@@ -71,7 +78,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

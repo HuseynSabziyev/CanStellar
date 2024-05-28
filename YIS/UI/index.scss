@@ -33,6 +33,7 @@ background-image: url("./assets/background.png");
     #tele-data{
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         transition-duration: 1s;
+        
         &:hover{
             transition-duration: 1s;
             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
