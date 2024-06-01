@@ -35,7 +35,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="./assets/index.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <title>GCS Interface</title>
 </head>
@@ -45,23 +45,34 @@
         <h2>CanStellar Ground Station Interface</h2>
         <a id="sendButton" class="btn btn-warning">Start telemetry receiving process!</a>
         <a id="setTime" class="btn btn-success">Set time</a>
-        <a id="simControl" class="btn btn-success">Simulation mode</a> @*needs work*@
-        <a id="simPressure" class="btn btn-success">Simulation pressure</a> @*needs work*@
+         <a id="simControl" class="btn btn-success">Simulation mode</a>
+         <div id="simControlSelect" style="display: none;"></div>
+        <div id="simPressureInput" style="display: none;">
+            <input type="number" id="pressureValue" class="form-control" placeholder="Enter pressure value">
+            <button id="submitPressure" class="btn btn-primary">Submit</button>
+        </div>
         <a id="calAltitude" class="btn btn-primary">Calibrate altitude</a>
-        <a id="controlAudio" class="btn btn-success">Control audio</a> @*needs work*@
+        <a id="controlAudio" class="btn btn-success">Control audio</a>
+        <div id="controlAudioSelect" style="display: none;"></div>
         <a id="stopButton" class="btn btn-danger">STOP!</a>
-
     </div>
-
     <div id="main" class="container-fluid">
+        <div style="display: flex !important;flex-direction: row !important;flex-wrap: wrap !important;gap: 200px !important;justify-content: center !important;" id="telemetryChartContainer">
+            <canvas id="altitudeChart"></canvas>
+            <canvas id="airspeedChart"></canvas>
+            <canvas id="temperatureChart"></canvas>
+            <canvas id="pressureChart"></canvas>
+        </div>
         <div id="databox" class="container-sm display-flex flex-direction-column">
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.5/dist/browser/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Event handler for the 'sendButton'
             $("#sendButton").click(function () {
                 $.ajax({
                     url: "/Home/TelemetryFunc",
@@ -71,42 +82,126 @@
                     },
                     error: function (xhr, status, error) {
                         console.error("Error starting the program:", error);
-                        <a href="C:\Users\V-COMP\Desktop\CanStellar\YIS\CanStellarBack\CanStellarBack\Controllers\HomeController.cs">C:\Users\V-COMP\Desktop\CanStellar\YIS\CanStellarBack\CanStellarBack\Controllers\HomeController.cs</a>
                     },
                 });
             });
-        });
 
-        $(document).ready(function () {
+            // Event handler for the 'setTime' button
             $("#setTime").click(function () {
                 $.ajax({
                     url: "/Home/SetTime",
                     type: "POST",
                     success: function () {
-                        console.log("Program started successfully.");
+                        console.log("Time set successfully.");
                     },
                     error: function (xhr, status, error) {
-                        console.error("Error starting the program:", error);
+                        console.error("Error setting time:", error);
                     },
                 });
             });
-        });
 
-        $(document).ready(function () {
-            $("#simControl").click(function () {
+            // Event handler for the 'calAltitude' button
+            $("#calAltitude").click(function () {
                 $.ajax({
-                    url: "/Home/SetTime",
+                    url: "/Home/CalibrateAltitude",
                     type: "POST",
                     success: function () {
-                        console.log("Program started successfully.");
+                        console.log("Altitude calibrated successfully.");
                     },
                     error: function (xhr, status, error) {
-                        console.error("Error starting the program:", error);
+                        console.error("Error calibrating altitude:", error);
                     },
                 });
             });
+
+            // Event handler for the 'simControl' button
+            $("#simControl").click(function () {
+                if ($("#simControlSelect").is(':empty')) {
+                    const selectBox = `
+                                <select id="simControlOptions" class="form-select">
+                                    <option value="2">Enable</option>
+                                    <option value="1">Activate</option>
+                                    <option value="0" selected>Disable</option>
+                                </select>
+                            `;
+                    $("#simControlSelect").html(selectBox);
+
+                    // Add change event listener to the select box
+                    $("#simControlOptions").on('change', function () {
+                        const selectedValue = $(this).val();
+                        $.ajax({
+                            url: "/Home/SimulationControl",
+                            type: "POST",
+                            data: { key: selectedValue },
+                            success: function () {
+                                console.log("Simulation mode set to " + selectedValue);
+                                if (selectedValue == "1" || selectedValue == "2") {
+                                    $("#simPressureInput").show();
+                                } else if (selectedValue == "0") {
+                                    $("#simPressureInput").hide();
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error setting simulation mode:", error);
+                            },
+                        });
+                        // Hide the select box after selection
+                        $("#simControlSelect").hide();
+                    });
+                }
+                $("#simControlSelect").toggle();
+            });
+
+            $("#submitPressure").click(function () {
+                const pressureValue = $("#pressureValue").val();
+                $.ajax({
+                    url: "/Home/SimulatePressure",
+                    type: "POST",
+                    data: { Pressure: pressureValue },
+                    success: function () {
+                        console.log("Simulated pressure set to " + pressureValue);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error setting simulated pressure:", error);
+                    },
+                });
+            });
+
+            $("#controlAudio").click(function () {
+                if ($("#controlAudioSelect").is(':empty')) {
+                    const selectBox = `
+                        <select id="controlAudioOptions" class="form-select">
+                            <option value="1">On</option>
+                            <option value="0" selected>Off</option>
+                        </select>
+                    `;
+                    $("#controlAudioSelect").html(selectBox);
+
+                    // Add change event listener to the select box
+                    $("#controlAudioOptions").on('change', function () {
+                        const selectedValue = $(this).val();
+                        $.ajax({
+                            url: "/Home/ControlAudio",
+                            type: "POST",
+                            data: { key: selectedValue },
+                            success: function () {
+                                console.log("Audio control set to " + selectedValue);
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error setting audio control:", error);
+                            },
+                        });
+
+                        // Hide the select box after selection
+                        $("#controlAudioSelect").hide();
+                    });
+                }
+                $("#controlAudioSelect").toggle();
+            });
+
         });
     </script>
+
     <script>
         $(document).ready(function () {
             $("#stopButton").click(function () {
@@ -153,22 +248,22 @@
                     '<li><p>Packet Count: ' + telemetry.packetCount + ' </p></li>' +
                     '<li><p>State: ' + telemetry.state + '</p></li>' +
                     '<li><p>Altitude: ' + telemetry.altitude + ' m</p></li>' +
-                    '<li><p>Air Speed: ' + telemetry.speed + ' m/s</p></li>' +
-                    '<li><p>HS_DEPLOYED: ' + telemetry.HS_DEPLOYED + '</p></li>' +
-                    '<li><p>PC_DEPLOYED: ' + telemetry.PC.DEPLOYED + '</p></li>' +
+                    '<li><p>Air Speed: ' + telemetry.airSpeed + ' m/s</p></li>' +
+                    '<li><p>HS_DEPLOYED: ' + telemetry.hS_DEPLOYED + '</p></li>' +
+                    '<li><p>PC_DEPLOYED: ' + telemetry.pC_DEPLOYED + '</p></li>' +
                     '<li><p>Temperature: ' + telemetry.temperature + '</p></li>' +
                     '<li><p>Pressure: ' + telemetry.pressure + ' </p></li>' +
                     '<li><p>Voltage: ' + telemetry.voltage + ' V</p></li>' +
-                    '<li><p>GPS Time: ' + telemetry.GPS_Time + ' </p></li>' +
-                    '<li><p>GPS Altitude: ' + telemetry.GPS_Altitude + ' m</p></li>' +
-                    '<li><p>GPS_Latitude: ' + telemetry.GPS_Latitude + ' </p></li>' +
-                    '<li><p>GPS_Longitude: ' + telemetry.GPS_Longitude + ' </p></li>' +
-                    '<li><p>GPS_Sats: ' + telemetry.GPS_Sats + ' </p></li>' +
-                    '<li><p>Tilt X: ' + telemetry.Tilt_X + ' </p></li>' +
-                    '<li><p>Tilt Y: ' + telemetry.Tilt_Y + ' </p></li>' +
-                    '<li><p>Rotation Z: ' + telemetry.Rot_Z + ' </p></li>' +
-                    '<li><p>CMD Echo: ' + telemetry.CMD_ECHO + ' </p></li>' +
-                    '<li><p>Note: ' + telemetry.Note + ' </p></li>' +
+                    '<li><p>GPS Time: ' + telemetry.gpS_Time + ' </p></li>' +
+                    '<li><p>GPS Altitude: ' + telemetry.gpS_Altitude + ' m</p></li>' +
+                    '<li><p>GPS_Latitude: ' + telemetry.gpS_Latitude + ' </p></li>' +
+                    '<li><p>GPS_Longitude: ' + telemetry.gpS_Longitude + ' </p></li>' +
+                    '<li><p>GPS_Sats: ' + telemetry.gpS_Sats + ' </p></li>' +
+                    '<li><p>Tilt X: ' + telemetry.tilt_X + ' </p></li>' +
+                    '<li><p>Tilt Y: ' + telemetry.tilt_Y + ' </p></li>' +
+                    '<li><p>Rotation Z: ' + telemetry.rot_Z + ' </p></li>' +
+                    '<li><p>CMD Echo: ' + telemetry.cmD_ECHO + ' </p></li>' +
+                    '<li><p>Note: ' + telemetry.note + ' </p></li>' +
                     '</ol>' +
                     '</div>';
                 telemetryDataContainer.prepend(telemetryData);
@@ -176,7 +271,126 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            var chartWidth = 400;
+            var chartHeight = 300;
+            var altitudeChartCtx = document.getElementById('altitudeChart').getContext('2d');
+            var airspeedChartCtx = document.getElementById('airspeedChart').getContext('2d');
+            var temperatureChartCtx = document.getElementById('temperatureChart').getContext('2d');
+            var pressureChartCtx = document.getElementById('pressureChart').getContext('2d');
 
+            altitudeChartCtx.canvas.width = chartWidth;
+            altitudeChartCtx.canvas.height = chartHeight;
+            airspeedChartCtx.canvas.width = chartWidth;
+            airspeedChartCtx.canvas.height = chartHeight;
+            temperatureChartCtx.canvas.width = chartWidth;
+            temperatureChartCtx.canvas.height = chartHeight;
+            pressureChartCtx.canvas.width = chartWidth;
+            pressureChartCtx.canvas.height = chartHeight;
+
+            var altitudeChart = new Chart(altitudeChartCtx, getChartConfig("Altitude", 0, 1000));
+            var airspeedChart = new Chart(airspeedChartCtx, getChartConfig("Airspeed", 0, 1000));
+            var temperatureChart = new Chart(temperatureChartCtx, getChartConfig("Temperature", 0, 100));
+            var pressureChart = new Chart(pressureChartCtx, getChartConfig("Pressure", 50, 150));
+
+            function getChartConfig(label, yAxisMin, yAxisMax) {
+                return {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: label,
+                            data: [],
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        scales: {
+                            y: {
+                                min: yAxisMin,
+                                max: yAxisMax,
+                                ticks: {
+                                    // Allow chart to display intermediate values
+                                    stepSize: undefined, // Let Chart.js handle step sizes
+                                    callback: function (value) {
+                                        return value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+
+            var counter = 1;
+            var maxDataPoints = 10;
+
+            var updateChart = function (telemetry) {
+                var time = counter++;
+
+                // Altitude
+                if (altitudeChart.data.labels.length >= maxDataPoints) {
+                    altitudeChart.data.labels.shift();
+                    altitudeChart.data.datasets[0].data.shift();
+                }
+                altitudeChart.data.labels.push(time);
+                altitudeChart.data.datasets[0].data.push(telemetry.altitude);
+
+                // Airspeed
+                if (airspeedChart.data.labels.length >= maxDataPoints) {
+                    airspeedChart.data.labels.shift();
+                    airspeedChart.data.datasets[0].data.shift();
+                }
+                airspeedChart.data.labels.push(time);
+                airspeedChart.data.datasets[0].data.push(telemetry.airSpeed);
+
+                // Temperature
+                if (temperatureChart.data.labels.length >= maxDataPoints) {
+                    temperatureChart.data.labels.shift();
+                    temperatureChart.data.datasets[0].data.shift();
+                }
+                temperatureChart.data.labels.push(time);
+                temperatureChart.data.datasets[0].data.push(telemetry.temperature);
+
+                // Pressure
+                if (pressureChart.data.labels.length >= maxDataPoints) {
+                    pressureChart.data.labels.shift();
+                    pressureChart.data.datasets[0].data.shift();
+                }
+                pressureChart.data.labels.push(time);
+                pressureChart.data.datasets[0].data.push(telemetry.pressure);
+
+                // Update all charts
+                altitudeChart.update();
+                airspeedChart.update();
+                temperatureChart.update();
+                pressureChart.update();
+            };
+
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("/telemetryHub")
+                .build();
+            connection.start()
+                .then(function () {
+                    console.log("SignalR connection established.");
+                    console.log("SignalR connection ID: " + connection.connectionId);
+                })
+                .catch(function (err) {
+                    console.error(err.toString());
+                });
+
+            connection.on("ReceiveTelemetryData", function (telemetry) {
+                console.log("Received telemetry data:", telemetry);
+                updateChart(telemetry);
+            });
+        });
+
+    </script>
+   
+   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 </body>
 </html>

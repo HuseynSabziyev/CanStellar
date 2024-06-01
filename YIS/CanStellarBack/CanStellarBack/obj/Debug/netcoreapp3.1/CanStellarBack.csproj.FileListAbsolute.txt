@@ -112,3 +112,4 @@ C:\Users\V-COMP\Desktop\CanStellar\YIS\CanStellarBack\CanStellarBack\obj\Debug\n
 C:\Users\V-COMP\Desktop\CanStellar\YIS\CanStellarBack\CanStellarBack\obj\Debug\netcoreapp3.1\CanStellarBack.dll
 C:\Users\V-COMP\Desktop\CanStellar\YIS\CanStellarBack\CanStellarBack\obj\Debug\netcoreapp3.1\CanStellarBack.pdb
 C:\Users\V-COMP\Desktop\CanStellar\YIS\CanStellarBack\CanStellarBack\obj\Debug\netcoreapp3.1\CanStellarBack.genruntimeconfig.cache
+C:\Users\Aykhan\Desktop\CanStellar\YIS\CanStellarBack\CanStellarBack\bin\Debug\netcoreapp3.1\CanStellarBack.StaticWebAssets.xml

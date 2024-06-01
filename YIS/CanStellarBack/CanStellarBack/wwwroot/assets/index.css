@@ -28,25 +28,32 @@
     background-repeat: repeat;
     background-size: contain;
     padding-bottom: 700px;
-    background-image: url("./assets/background.png");
+    background-image: url("./background.png");
+}
+
+#telemetryChartContainer {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 200px !important;
+    justify-content: center !important;
 }
 
 #main #databox {
-  border-radius: 10px;
-  margin-top: 100px;
-  background-color: rgba(255, 255, 255, 0.9);
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  gap: 20px;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-      align-items:center;
-      
+    border-radius: 10px;
+    margin-top: 100px;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    gap: 20px;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 #main #databox #tele-data {
@@ -58,7 +65,7 @@
   border-radius: 10px;
   margin: 30px;
   width:80%;
-  height:70px;
+  
   padding: 20px;
   border-color: black;
   border-width: 1px;
@@ -73,12 +80,19 @@
   gap: 20px;
 }
 
-#main #databox #tele-data:hover {
-  -webkit-transition-duration: 1s;
-          transition-duration: 1s;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-          box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+#telemetric-data-list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    list-style: none;
 }
+    #main #databox #tele-data:hover {
+        -webkit-transition-duration: 1s;
+        transition-duration: 1s;
+        -webkit-box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
 
 #main #databox #tele-data #raw-telemetric-data {
   color: black;
